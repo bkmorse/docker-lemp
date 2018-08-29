@@ -1,0 +1,59 @@
+version: '2'
+services:
+  web:
+    image: nginx:latest
+    container_name: ${CONTAINER_PREFIX}_nginx
+    links:
+      - php
+    ports:
+      - 80:80
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    volumes_from:
+      - php
+  php:
+    build: ./docker/php-7.0-fpm-custom
+    container_name: ${CONTAINER_PREFIX}_php
+    environment:
+      - TYPO3_CONTEXT=Development/Docker
+    # env_file:
+      # - path/to/.env
+    links:
+      - db
+      - redis
+    volumes:
+      - ./web:/var/www/html
+      
+  mailhog:
+    image: mailhog/mailhog
+    container_name: ${CONTAINER_PREFIX}_mailhog
+    ports:
+      - 1025:1025
+      - 8025:8025
+
+  db:
+    image: mysql:5.7
+    container_name: ${CONTAINER_PREFIX}_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    # command: --sql_mode="" #if you run into issues with sql
+    ports:
+      - 13306:3306
+
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+                
+  redis:
+    image: redis:latest
+    container_name: ${CONTAINER_PREFIX}_redis
+    ports:
+      - 16379:6379
+
+volumes:
+  redis:
+    driver: "local"
+  mysql:
+    driver: "local"
