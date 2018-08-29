@@ -1,3 +1,5 @@
+My base LEMP stack for developing projects locally
+
 # docker
 Run Nginx, php-fpm and MariaDB using [Docker]
 
