@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y \
 	libjpeg62-turbo-dev \
 	libmcrypt-dev \
 	libpng-dev \
-	curl
+	curl \
+	vim
 
 RUN rm /etc/apt/preferences.d/no-debian-php && \
 	apt-get update && apt-get install -y libxml2-dev php-soap && docker-php-ext-install soap
